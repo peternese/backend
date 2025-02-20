@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 import random, string
 import sqlite3
@@ -11,6 +12,10 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 app = FastAPI()
 
 BASE_URL = "https://quickgraeff.onrender.com"
+
+@app.get("/")
+def root():
+    return {"message": "URL Shortener API is running! Use /shorten/ to shorten URLs. Powered by Peter Graeff."}
 
 # SQLite Datenbank Verbindung
 conn = psycopg2.connect(DATABASE_URL, sslmode="require")
@@ -41,7 +46,7 @@ def redirect(short_url: str):
     c.execute("SELECT original FROM urls WHERE short=%s", (short_url,))
     result = c.fetchone()
     if result:
-        return {"redirect_to": result[0]}
+        return RedirectResponse(url=result[0], status_code=307)  # 307 behält Methode (z. B. POST)
     raise HTTPException(status_code=404, detail="URL not found")
 
 if __name__ == "__main__":
