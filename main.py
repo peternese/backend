@@ -14,6 +14,14 @@ BASE_URL = "https://quickgraeff.onrender.com"
 def root():
     return {"message": "URL Shortener API is running! Use /shorten/ to shorten URLs. Powered by Peter Graeff."}
 
+# Funktion zur Überprüfung der URL-Erreichbarkeit
+def check_url_exists(url: str) -> bool:
+    try:
+        response = requests.head(url, allow_redirects=True, timeout=5)
+        return response.status_code < 400  # Gültig, wenn Statuscode < 400
+    except requests.RequestException:
+        return False  
+
 # Funktion zum Generieren einer Kurz-URL
 def generate_short_url(length=6):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
@@ -21,6 +29,10 @@ def generate_short_url(length=6):
 # API-Endpunkt: URL kürzen
 @app.post("/shorten/")
 def shorten_url(url_data: URLRequest):
+     # Prüfen, ob die URL existiert
+    if not check_url_exists(url_data.original_url):
+        raise HTTPException(status_code=400, detail="The provided URL does not exist or is unreachable. Please try again.")
+    
     short = generate_short_url()
     save_url(short, url_data.original_url) # Datenbankeintrag über database.py speichern
     return {"short_url": f"{BASE_URL}/{short}"}
