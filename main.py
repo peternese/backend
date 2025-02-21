@@ -1,13 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import RedirectResponse
-from pydantic import BaseModel
 import random, string
-import sqlite3
+from models import URLRequest
+from database import save_url, get_original_url
 import uvicorn
 import os
-import psycopg2
-
-DATABASE_URL = os.environ.get("DATABASE_URL")
 
 app = FastAPI()
 
@@ -16,17 +13,6 @@ BASE_URL = "https://quickgraeff.onrender.com"
 @app.get("/")
 def root():
     return {"message": "URL Shortener API is running! Use /shorten/ to shorten URLs. Powered by Peter Graeff."}
-
-# SQLite Datenbank Verbindung
-conn = psycopg2.connect(DATABASE_URL, sslmode="require")
-c = conn.cursor()
-
-c.execute("CREATE TABLE IF NOT EXISTS urls (short TEXT PRIMARY KEY, original TEXT)")
-conn.commit()
-
-# Model für die API-Anfragen
-class URLRequest(BaseModel):
-    original_url: str
 
 # Funktion zum Generieren einer Kurz-URL
 def generate_short_url(length=6):
