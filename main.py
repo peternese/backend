@@ -4,6 +4,7 @@ import random, string
 from models import URLRequest
 from database import save_url, get_original_url
 import uvicorn
+import requests
 import os
 
 app = FastAPI()
