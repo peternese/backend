@@ -22,15 +22,13 @@ def generate_short_url(length=6):
 @app.post("/shorten/")
 def shorten_url(url_data: URLRequest):
     short = generate_short_url()
-    c.execute("INSERT INTO urls (short, original) VALUES (%s, %s)", (short, url_data.original_url))
-    conn.commit()
+    save_url(short, url_data.original_url) # Datenbankeintrag über database.py speichern
     return {"short_url": f"{BASE_URL}/{short}"}
 
 # API-Endpunkt: URL auflösen
 @app.get("/{short_url}")
 def redirect(short_url: str):
-    c.execute("SELECT original FROM urls WHERE short=%s", (short_url,))
-    result = c.fetchone()
+    result = get_original_url(short_url) # Datenbanabfrage über database.py
     if result:
         return RedirectResponse(url=result[0], status_code=307)  # 307 behält Methode (z. B. POST)
     raise HTTPException(status_code=404, detail="URL not found")
