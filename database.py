@@ -19,9 +19,21 @@ def save_url(short: str, original: str):
 
 # Retrieve original URL
 def get_original_url(short: str):
-    response = requests.get(f"{SUPABASE_URL}/urls?short=eq.{short}", headers=HEADERS)
+    response = requests.get(f"{SUPABASE_URL}/rest/v1/urls?short=eq.{short}", headers=HEADERS)
+
+    print("🔍 Supabase Response:", response.status_code, response.text)  # Debugging
+
+    if response.status_code != 200:
+        return None  # If there's an error, return None
+    
     data = response.json()
-    return data[0]["original"] if data else None
+    print("📦 Data Received:", data)  # Debugging
+    
+    if not data:  # If no URL exists for the short code
+        return None
+
+    return data[0].get("original")  # Safely return original URL
+
 
 # Erster Versuch über PostgreSQL Supabase, alelrdings nicht erfolgreich, da supabase die Verbindung über Vercel blockiert. Nun über API Zugriff # 
 # import os
