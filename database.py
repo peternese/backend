@@ -5,7 +5,7 @@ import psycopg2
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 # Verbindung zur PostgreSQL-Datenbank herstellen
-conn = psycopg2.connect(DATABASE_URL, sslmode="disable")
+conn = psycopg2.connect(DATABASE_URL, sslmode="require")
 c = conn.cursor()
 
 # Tabelle erstellen, falls sie nicht existiert
