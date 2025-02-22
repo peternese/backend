@@ -2,10 +2,8 @@ import os
 import requests
 
 # Get Supabase API Key from Environment Variables
-# SUPABASE_URL = os.environ.get("SUPABASE_URL")
-# SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
-SUPABASE_URL = "https://ftcxeelipbzutrciyyiq.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ0Y3hlZWxpcGJ6dXRyY2l5eWlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAxNTkwNjEsImV4cCI6MjA1NTczNTA2MX0.-rnaqD0mpP8lMHrlqIgpQajPOPAwWE_S8ulmtNvogaU"
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 
 HEADERS = {
     "apikey": SUPABASE_KEY,
@@ -25,7 +23,7 @@ def get_original_url(short: str):
     data = response.json()
     return data[0]["original"] if data else None
 
-
+# Erster Versuch über PostgreSQL Supabase, alelrdings nicht erfolgreich, da supabase die Verbindung über Vercel blockiert. Nun über API Zugriff # 
 # import os
 # import psycopg2
 
