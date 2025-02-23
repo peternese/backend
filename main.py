@@ -18,10 +18,20 @@ def root():
 # Funktion zur Überprüfung der URL-Erreichbarkeit
 def check_url_exists(url: str) -> bool:
     try:
-        response = requests.head(url, allow_redirects=True, timeout=5)
-        return response.status_code < 400  # Gültig, wenn Statuscode < 400
-    except requests.RequestException:
-        return False  
+        if not url.startswith("http://") and not url.startswith("https://"):
+            url = "https://" + url  # Standardmäßig HTTPS verwenden
+
+        print(f"🔍 Checking URL: {url}")  # Debugging
+
+        response = requests.get(url, allow_redirects=True, timeout=5)
+
+        print(f"✅ URL Status Code: {response.status_code}")  # Debugging
+
+        return response.status_code < 400 or response.status_code == 403  # 403 zulassen
+    except requests.RequestException as e:
+        print(f"❌ Error checking URL {url}: {e}")  # Debugging
+        return False
+
 
 # Funktion zum Generieren einer Kurz-URL
 def generate_short_url(length=6):
@@ -41,10 +51,14 @@ def shorten_url(url_data: URLRequest):
 # API-Endpunkt: URL auflösen
 @app.get("/{short_url}")
 def redirect(short_url: str):
-    result = get_original_url(short_url) # Datenbanabfrage über database.py
+    result = get_original_url(short_url)  # Datenbankabfrage
+    
     if result:
-        return RedirectResponse(url=result[0], status_code=307)  # 307 behält Methode (z. B. POST)
+        print(f"🚀 Redirecting user to: {result}")  # Debugging
+        return RedirectResponse(url=result, status_code=307)  
+
     raise HTTPException(status_code=404, detail="URL not found")
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))  # Render setzt automatisch einen Port
