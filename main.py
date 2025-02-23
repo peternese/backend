@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import RedirectResponse
 import random, string
 from models import URLRequest
-from database import save_url, get_original_url
+from database import save_url, get_original_url, get_short_url
 import uvicorn
 import requests
 import os
@@ -40,12 +40,18 @@ def generate_short_url(length=6):
 # API-Endpunkt: URL kürzen
 @app.post("/shorten/")
 def shorten_url(url_data: URLRequest):
-     # Prüfen, ob die URL existiert
+    # Prüfen, ob die URL existiert
     if not check_url_exists(url_data.original_url):
         raise HTTPException(status_code=400, detail="The provided URL does not exist or is unreachable. Please try again.")
-    
+
+    # 🔍 Prüfen, ob die URL bereits existiert
+    existing_short = get_short_url(url_data.original_url)
+    if existing_short:
+        return {"short_url": f"{BASE_URL}/{existing_short}"}  # Falls ja, gib die existierende zurück
+
+    # Falls nicht, erstelle eine neue
     short = generate_short_url()
-    save_url(short, url_data.original_url) # Datenbankeintrag über database.py speichern
+    save_url(short, url_data.original_url)  # Speichern in der Datenbank
     return {"short_url": f"{BASE_URL}/{short}"}
 
 # API-Endpunkt: URL auflösen
