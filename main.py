@@ -24,9 +24,6 @@ app.add_middleware(
     allow_headers=["*"],  # Erlaubt alle Header
 )
 
-
-app = FastAPI()
-
 BASE_URL = "https://quickgraeff.vercel.app"
 
 @app.get("/")
