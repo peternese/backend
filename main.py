@@ -22,6 +22,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["GET","POST","OPTIONS"],  # Erlaubt alle Methoden (GET, POST, OPTIONS usw.)
     allow_headers=["*"],  # Erlaubt alle Header
+    expose_headers=["Location"]  # ✅ WICHTIG für Redirects!
 )
 
 BASE_URL = "https://quickgraeff.vercel.app"
@@ -76,7 +77,7 @@ def redirect(short_url: str):
     
     if result:
         print(f"🚀 Redirecting user to: {result}")  # Debugging
-        return RedirectResponse(url=result, status_code=307)  
+        return RedirectResponse(url=result, status_code=308)  # ✅ 308 erzwingt Browser-Redirect
 
     raise HTTPException(status_code=404, detail="URL not found")
 
