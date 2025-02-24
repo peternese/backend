@@ -6,6 +6,19 @@ from database import save_url, get_original_url, get_short_url
 import uvicorn
 import requests
 import os
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+# ✅ CORS Middleware hinzufügen
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Hier kannst du deine Frontend-URL einfügen, z. B. ["https://quickgraeff.vercel.app"]
+    allow_credentials=True,
+    allow_methods=["*"],  # Erlaubt alle Methoden (GET, POST, OPTIONS usw.)
+    allow_headers=["*"],  # Erlaubt alle Header
+)
+
 
 app = FastAPI()
 
