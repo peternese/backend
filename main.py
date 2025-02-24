@@ -78,6 +78,9 @@ def redirect(short_url: str):
 
     raise HTTPException(status_code=404, detail="URL not found")
 
+@app.options("/{full_path:path}")
+async def preflight_handler():
+    return {"message": "CORS preflight successful"}
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))  # Render setzt automatisch einen Port
