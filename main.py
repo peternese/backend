@@ -10,10 +10,15 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+origins = [
+    "https://quickgraeff.vercel.app",  # Dein Frontend auf Vercel
+    "http://localhost:3000",  # Falls du lokal testest
+]
+
 # ✅ CORS Middleware hinzufügen
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Hier kannst du deine Frontend-URL einfügen, z. B. ["https://quickgraeff.vercel.app"]
+    allow_origins=origins,  # Hier kannst du deine Frontend-URL einfügen, z. B. ["https://quickgraeff.vercel.app"]
     allow_credentials=True,
     allow_methods=["GET","POST","OPTIONS"],  # Erlaubt alle Methoden (GET, POST, OPTIONS usw.)
     allow_headers=["*"],  # Erlaubt alle Header
