@@ -9,7 +9,7 @@ import os
 
 app = FastAPI()
 
-BASE_URL = "https://quickgraeff.vercel.app"
+BASE_URL = "quickgraeffbackend.vercel.app"
 
 @app.get("/")
 def root():
